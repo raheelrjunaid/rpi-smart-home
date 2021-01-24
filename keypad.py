@@ -72,7 +72,6 @@ def tryKey(key):
         # Read code change and apply change to global KEY (not global)
         elif len(trycode) == 4:
             KEY = trycode
-            print(KEY)
             trycode = ''
             keymode = 'enter'
 
