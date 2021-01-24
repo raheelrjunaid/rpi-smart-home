@@ -2,6 +2,8 @@
 # Author: Raheel Junaid
 # Date Started: 1/23/21
 
+from gpiozero import Buzzer
+from time import sleep
 from pad4pi import rpi_gpio
 from signal import pause
 
@@ -26,7 +28,11 @@ keypad = factory.create_keypad(keypad=KEYPAD, row_pins=ROW_PINS, col_pins=COL_PI
 # Default Key Mode
 keymode = 'enter'
 trycode = ''
+
+# Temporary variable — I might add to globals
+buzzer = Buzzer(4)
 def tryKey(key):
+    buzzer.beep(0.2, n=1)
 
     # Import globals (required as function doesn't allow args)
     global trycode
@@ -55,8 +61,10 @@ def tryKey(key):
             if len(trycode) == 4:
                 if trycode == KEY:
                     print('success') # TODO Disarm security system
+                    buzzer.beep(0.1, 0.1, n=2)
                 else:
                     print('failure')
+                    buzzer.beep(0.1, 0.1, n=3)
                 trycode = ''
 
         # return values to change (no global var writing)
@@ -74,6 +82,8 @@ def tryKey(key):
             KEY = trycode
             trycode = ''
             keymode = 'enter'
+            sleep(0.3)
+            buzzer.beep(0.2, 0.1, n=3)
 
         # return values to change (no global var writing)
         return trycode, keymode, KEY
