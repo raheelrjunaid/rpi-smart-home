@@ -21,46 +21,55 @@ KEY = '1234'
 
 keypad = factory.create_keypad(keypad=KEYPAD, row_pins=ROW_PINS, col_pins=COL_PINS)
 
+# Default Key Mode
 keymode = 'enter'
-
 trycode = ''
 def tryKey(key):
+    # Import globals (required as function doesn't allow args)
     global trycode
     global keymode
-    trycode += str(key)
-    print(trycode)
-    
-    if key == '*':
-        trycode = ''
-        print('reset code')
-    elif key == '#':
-        trycode = ''
-        keymode = 'change'
-        newKey(0)
-    else:
-        if len(trycode) == 4:
-            if trycode == KEY:
-                print('success')
-            else:
-                print('failure')
-            trycode = ''
-
-def newKey(key):
     global KEY
-    global trycode
-    global keymode
-    print('Input 4 digit code')
+
     trycode += str(key)
-    if len(trycode) == 4:
-        KEY = trycode
-        trycode = ''
-        keymode = 'enter'
+    print(trycode, keymode)
+
+    # Working key attempt function
+    def enterKey(key, trycode, keymode):
+        if key == '*':
+            trycode = ''
+            print('reset code')
+        elif key == '#':
+            trycode = ''
+            keymode = 'change'
+            newKey(key, trycode, keymode, KEY)
+        else:
+            if len(trycode) == 4:
+                if trycode == KEY:
+                    print('success')
+                else:
+                    print('failure')
+                trycode = ''
+        return trycode, keymode
+
+    # Working change keycode function
+    def newKey(key, trycode, keymode, KEY):
+        if len(trycode) == 0:
+            print('Input 4 digit code')
+        elif len(trycode) == 4:
+            KEY = trycode
+            print(KEY)
+            trycode = ''
+            keymode = 'enter'
+        return trycode, keymode, KEY
+
+    if keymode == 'enter':
+        trycode, keymode = enterKey(key, trycode, keymode)
+    else:
+        trycode, keymode, KEY = newKey(key, trycode, keymode, KEY)
 
 def main():
-    if keymode == 'change':
-        keypad.registerKeyPressHandler(newKey)
-    else:
-        keypad.registerKeyPressHandler(tryKey)
+    keypad.registerKeyPressHandler(tryKey)
+
 def close():
     keypad.cleanup()
 
