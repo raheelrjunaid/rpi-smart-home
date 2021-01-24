@@ -12,18 +12,55 @@ KEYPAD = [
     ['*', 0, '#', 'D']
 ]
 
-ROW_PINS = [4, 17, 27, 22]
-COL_PINS = [5, 6, 13, 19]
+ROW_PINS = [12, 16, 20, 21]
+COL_PINS = [6, 13, 19, 26]
 
 factory = rpi_gpio.KeypadFactory()
 
+KEY = '1234'
+
 keypad = factory.create_keypad(keypad=KEYPAD, row_pins=ROW_PINS, col_pins=COL_PINS)
 
-def printKey(key):
-    print(key)
+keymode = 'enter'
+
+trycode = ''
+def tryKey(key):
+    global trycode
+    global keymode
+    trycode += str(key)
+    print(trycode)
+    
+    if key == '*':
+        trycode = ''
+        print('reset code')
+    elif key == '#':
+        trycode = ''
+        keymode = 'change'
+        newKey(0)
+    else:
+        if len(trycode) == 4:
+            if trycode == KEY:
+                print('success')
+            else:
+                print('failure')
+            trycode = ''
+
+def newKey(key):
+    global KEY
+    global trycode
+    global keymode
+    print('Input 4 digit code')
+    trycode += str(key)
+    if len(trycode) == 4:
+        KEY = trycode
+        trycode = ''
+        keymode = 'enter'
 
 def main():
-    keypad.registerKeyPressHandler(printKey)
+    if keymode == 'change':
+        keypad.registerKeyPressHandler(newKey)
+    else:
+        keypad.registerKeyPressHandler(tryKey)
 def close():
     keypad.cleanup()
 
