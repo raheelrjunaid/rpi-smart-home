@@ -28,7 +28,6 @@ try:
     fan.on()
     screen.text(f'Systems {(len(systems) + 1) * "-"} ' + readSystems(1), 1)
     screen.text(f'Status {(len(systems) + 2) * "-"} ' + readSystems(2), 2)
-    print(systems)
     pause()
 except KeyboardInterrupt:
     # FIX(Maybe) Module has trouble cleaning up with this function but the main function still works
