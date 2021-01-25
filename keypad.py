@@ -2,7 +2,7 @@
 # Author: Raheel Junaid
 # Date Started: 1/23/21
 
-from global_vars import buzzer, screen, armSystem
+from global_vars import buzzer, screen, armSystem, disarmSystem, showSystemStatus
 from time import sleep
 from pad4pi import rpi_gpio
 from signal import pause
@@ -28,14 +28,17 @@ keypad = factory.create_keypad(keypad=KEYPAD, row_pins=ROW_PINS, col_pins=COL_PI
 # Default Key Mode
 keymode = 'enter'
 trycode = ''
+triggerCount = 0
 
 def tryKey(key):
-    buzzer.beep(0.2, n=1)
+    # TODO: Add timeOut
 
     # Import globals (required as function doesn't allow args)
     global trycode
     global keymode
     global KEY
+
+    buzzer.beep(0.2, n=1)
 
     trycode += str(key)
     print(trycode, keymode)
@@ -43,14 +46,15 @@ def tryKey(key):
     # Working key attempt function
     def enterKey(key, trycode, keymode):
         screen.text('Attempt', 1)
+        global triggerCount
 
         # Reset Code
         if key == '*':
             if trycode == '*':
-                armSystem()
+                armSystem() # Arm security system on * press
                 screen.text('System ARMED', 1)
             else:
-                print('reset code')
+                print('reset code') # Unless their in the middle of typing out their code
             trycode = ''
 
         # Change key mode to begin changing keycode
@@ -63,16 +67,21 @@ def tryKey(key):
         else:
             if len(trycode) == 4:
                 if trycode == KEY:
-                    print('success') # TODO Disarm security system
+                    print('success')
+                    # TODO Add RGBLed Signal
+                    disarmSystem()
                     screen.text('Attempt Passed', 1)
                     screen.text('', 2)
                     buzzer.beep(0.1, 0.1, n=2)
+                    triggerCount = 0 
                     sleep(1)
                 else:
                     print('failure')
+                    # TODO Add RGBLed Signal
                     buzzer.beep(0.1, 0.1, n=3)
                     screen.text('Attempt Failed', 1)
                     screen.text('', 2)
+                    triggerCount += 1
                 trycode = ''
 
         # return values to change (no global var writing)
@@ -106,6 +115,12 @@ def tryKey(key):
     else:
         trycode, keymode, KEY = newKey(key, trycode, keymode, KEY)
     screen.text(trycode, 2)
+    
+    # Trip trigger system
+    if triggerCount == 3:
+        screen.text('Limit Reached', 1)
+        screen.text('', 2)
+        buzzer.beep()
 
 # Functions for main program to utilize
 def main():
