@@ -2,8 +2,9 @@
 # Author: Raheel Junaid
 # Date Started: 1/23/21
 
-from global_vars import buzzer, screen, armSystem, disarmSystem, showSystemStatus
+from global_vars import buzzer, screen, armSystem, disarmSystem, showSystemStatus, RGBLed
 from time import sleep
+from colorzero import Color
 from pad4pi import rpi_gpio
 from signal import pause
 
@@ -68,7 +69,7 @@ def tryKey(key):
             if len(trycode) == 4:
                 if trycode == KEY:
                     print('success')
-                    # TODO Add RGBLed Signal
+                    RGBLed.color = Color('green')
                     disarmSystem()
                     screen.text('Attempt Passed', 1)
                     screen.text('', 2)
@@ -78,6 +79,7 @@ def tryKey(key):
                 else:
                     print('failure')
                     # TODO Add RGBLed Signal
+                    RGBLed.color = Color('red')
                     buzzer.beep(0.1, 0.1, n=3)
                     screen.text('Attempt Failed', 1)
                     screen.text('', 2)
@@ -111,13 +113,18 @@ def tryKey(key):
     # Runtime statement using global keymode
     # Assign variables based on return statements
     if keymode == 'enter':
+        RGBLed.color = Color('white')
         trycode, keymode = enterKey(key, trycode, keymode)
     else:
+        RGBLed.color = Color('blue')
         trycode, keymode, KEY = newKey(key, trycode, keymode, KEY)
     screen.text(trycode, 2)
+
+    RGBLed.color = (0, 0, 0)
     
     # Trip trigger system
     if triggerCount == 3:
+        RGBLed.color = Color('red')
         screen.text('Limit Reached', 1)
         screen.text('', 2)
         buzzer.beep()
