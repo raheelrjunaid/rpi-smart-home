@@ -3,10 +3,14 @@
 # Date Started: 1/23/21
 
 from global_vars import buzzer, screen, armSystem, disarmSystem, showSystemStatus, RGBLed
+import os
+from dotenv import load_dotenv, set_key
 from time import sleep
 from colorzero import Color
 from pad4pi import rpi_gpio
 from signal import pause
+
+load_dotenv()
 
 # Keypad setup
 KEYPAD = [
@@ -21,8 +25,7 @@ COL_PINS = [6, 13, 19, 26]
 
 factory = rpi_gpio.KeypadFactory()
 
-# TODO Change to *user environment variable
-KEY = '1234'
+KEY = os.getenv('KEY')
 
 keypad = factory.create_keypad(keypad=KEYPAD, row_pins=ROW_PINS, col_pins=COL_PINS)
 
@@ -32,7 +35,7 @@ trycode = ''
 triggerCount = 0
 
 def tryKey(key):
-    # TODO: Add timeOut
+    # TODO Add timeOut
 
     # Import globals (required as function doesn't allow args)
     global trycode
@@ -78,7 +81,6 @@ def tryKey(key):
                     sleep(1)
                 else:
                     print('failure')
-                    # TODO Add RGBLed Signal
                     RGBLed.color = Color('red')
                     buzzer.beep(0.1, 0.1, n=3)
                     screen.text('Attempt Failed', 1)
@@ -99,10 +101,17 @@ def tryKey(key):
 
         # Read code change and apply change to global KEY (not global)
         elif len(trycode) == 4:
+
+            # Backend set
+            set_key('.env', 'KEY', trycode)
+
+            # Apply change in front
             KEY = trycode
             screen.text(f'to {trycode}', 2)
             trycode = ''
             keymode = 'enter'
+
+            # Show new code breifly
             sleep(1)
             screen.text('Attempt', 1)
             buzzer.beep(0.2, 0.1, n=3)
