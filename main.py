@@ -1,5 +1,5 @@
-from global_vars import screen, systems
-from gpiozero import DigitalOutputDevice, LED, RGBLED, Servo
+from global_vars import screen, systems, servo
+from gpiozero import DigitalOutputDevice, LED, RGBLED
 from colorzero import Color
 import keypad
 from time import sleep

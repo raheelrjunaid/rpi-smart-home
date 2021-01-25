@@ -1,7 +1,8 @@
 from gpiozero import AngularServo, Buzzer
 from rpi_lcd import LCD
 
-servo = AngularServo(18, 90, min_pulse_width=0.16/1000, max_pulse_width=2/1000)
+armed = True
+servo = AngularServo(18, 90)
 screen = LCD()
 systems = {
     'fan': 1,
@@ -9,3 +10,7 @@ systems = {
     'keypad': 1,
 }
 buzzer = Buzzer(4)
+def armSystem():
+    global armed
+    armed = True
+    servo.max()

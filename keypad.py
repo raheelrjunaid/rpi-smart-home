@@ -2,7 +2,7 @@
 # Author: Raheel Junaid
 # Date Started: 1/23/21
 
-from global_vars import buzzer, screen
+from global_vars import buzzer, screen, armSystem
 from time import sleep
 from pad4pi import rpi_gpio
 from signal import pause
@@ -46,8 +46,12 @@ def tryKey(key):
 
         # Reset Code
         if key == '*':
+            if trycode == '*':
+                armSystem()
+                screen.text('System ARMED', 1)
+            else:
+                print('reset code')
             trycode = ''
-            print('reset code') # TODO Also make this key arm security system
 
         # Change key mode to begin changing keycode
         elif key == '#':
