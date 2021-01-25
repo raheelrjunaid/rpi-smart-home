@@ -1,4 +1,5 @@
 .python-version
+*.vim
 
 __pycache__/
 *.py[cod]
