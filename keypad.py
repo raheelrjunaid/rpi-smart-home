@@ -2,7 +2,7 @@
 # Author: Raheel Junaid
 # Date Started: 1/23/21
 
-from gpiozero import Buzzer
+from global_vars import buzzer
 from time import sleep
 from pad4pi import rpi_gpio
 from signal import pause
@@ -29,8 +29,6 @@ keypad = factory.create_keypad(keypad=KEYPAD, row_pins=ROW_PINS, col_pins=COL_PI
 keymode = 'enter'
 trycode = ''
 
-# Temporary variable — I might add to globals
-buzzer = Buzzer(4)
 def tryKey(key):
     buzzer.beep(0.2, n=1)
 
