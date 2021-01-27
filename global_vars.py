@@ -1,5 +1,15 @@
-from gpiozero import Servo, Buzzer, RGBLED
+from gpiozero import Servo, Buzzer, RGBLED, DigitalOutputDevice
+from dotenv import load_dotenv
+from gpiozero.pins.pigpio import PiGPIOFactory
+import os
 from rpi_lcd import LCD
+
+load_dotenv()
+
+try:
+    remote_factory = PiGPIOFactory(host=os.environ['REMOTEPI'])
+except:
+    print(f'Could not connect to Raspberry Pi at {os.environ["REMOTEPI"]}')
 
 armed = True
 servo = Servo(18, 1)
@@ -11,6 +21,7 @@ systems = {
     'keypad': 1,
 }
 buzzer = Buzzer(4)
+fan = DigitalOutputDevice(17, pin_factory=remote_factory)
 
 def armSystem():
     # Arm all systems
@@ -19,6 +30,7 @@ def armSystem():
 
     global armed
     armed = True
+    fan.on()
     servo.max()
 
 def disarmSystem():
@@ -27,6 +39,8 @@ def disarmSystem():
         systems[system] = 0
     
     global armed
+    fan.off()
+    screen.clear()
     armed = False
 
 def readSystems(line):
