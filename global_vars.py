@@ -1,3 +1,7 @@
+# Global Variables and Components
+# Author: Raheel Junaid
+# Date Started: 1/24/21
+
 from gpiozero import Servo, Buzzer, RGBLED, DigitalOutputDevice
 from dotenv import load_dotenv
 from gpiozero.pins.pigpio import PiGPIOFactory
@@ -31,6 +35,7 @@ def armSystem():
 
     global armed
     armed = True
+    remote_buzzer.off()
     fan.on()
     servo.max()
 

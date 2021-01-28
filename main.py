@@ -11,7 +11,7 @@ from time import sleep
 from signal import pause
 
 try:
-    keypad.main() # Required to avoid circular import
+    keypad.main() # "keypad" Required to avoid circular import
     armSystem()
     showSystemStatus()
     pause()
