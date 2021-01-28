@@ -1,5 +1,10 @@
+# Door System on Raspberry Pi 3
+# Author: Raheel Junaid
+# Date Started: 1/27/21
+
 import RPi.GPIO as GPIO
 from gpiozero import Servo, Buzzer, DigitalOutputDevice
+from signal import pause
 from multiprocessing import Process
 import time
 from mfrc522 import SimpleMFRC522
@@ -17,19 +22,23 @@ def triggerTimer():
     while True:
 
         if timerStateInput.value == 1:
-            print('Aborting')
-            return
+            print('Thank you. Stopping timer process on next read.')
+            break
         
         if count <= 10:
-            print("You have " + str(10 - count) + " seconds remaining")
+            print(("You have " + str(10 - count) + " seconds remaining\r"), end="")
             count += 1
             buzzer.beep(0.1, 0.1, n=1)
             time.sleep(1)
 
         else:
-            print('Contact System Administrator to Disable')
-            servo.max()
-            buzzer.beep()
+            break
+    
+    if count >= 10:
+        print('Contact System Administrator to Disable')
+        servo.max()
+        buzzer.beep()
+        pause()
 
 timer_thread = Process(target=triggerTimer)
 authUserIDs = [248227650093]
@@ -39,9 +48,10 @@ try:
     while True:
 
         if timerStateInput.value == 1:
+            print('Timer Stopped')
+            log = []
             timerStateInput.value = 0
             timer_thread.terminate()
-            print(timer_thread.is_alive())
 
         authenticated = False
         id, text = rfid.read()
@@ -69,6 +79,6 @@ try:
         
 except KeyboardInterrupt:
     log = []
-    buzzer.off()
+    servo.max()
     GPIO.cleanup() # For RFID reader only
     print('\nExited Loop')
