@@ -12,7 +12,7 @@ except:
     print(f'Could not connect to Raspberry Pi at {os.environ["REMOTEPI"]}')
 
 armed = True
-servo = Servo(18, 1)
+servo = Servo(18, 1, pin_factory=remote_factory)
 RGBLed = RGBLED(27, 23, 25)
 screen = LCD()
 systems = {
@@ -21,7 +21,8 @@ systems = {
     'keypad': 1,
 }
 buzzer = Buzzer(4)
-fan = DigitalOutputDevice(17, pin_factory=remote_factory)
+remote_buzzer = Buzzer(17, pin_factory=remote_factory)
+fan = DigitalOutputDevice(22, pin_factory=remote_factory)
 
 def armSystem():
     # Arm all systems
@@ -40,6 +41,7 @@ def disarmSystem():
     
     global armed
     fan.off()
+    remote_buzzer.off()
     screen.clear()
     armed = False
 

@@ -2,9 +2,10 @@
 # Author: Raheel Junaid
 # Date Started: 1/23/21
 
-from global_vars import buzzer, screen, armSystem, disarmSystem, showSystemStatus, RGBLed
+from global_vars import buzzer, screen, armSystem, disarmSystem, showSystemStatus, RGBLed, remote_factory
 import os
 from dotenv import load_dotenv, set_key
+from gpiozero import DigitalOutputDevice
 from time import sleep
 from colorzero import Color
 from pad4pi import rpi_gpio
@@ -33,6 +34,7 @@ keypad = factory.create_keypad(keypad=KEYPAD, row_pins=ROW_PINS, col_pins=COL_PI
 keymode = 'enter'
 trycode = ''
 triggerCount = 0
+cancelRFIDTimer = DigitalOutputDevice(26, pin_factory=remote_factory)
 
 def tryKey(key):
     # TODO Add timeOut
@@ -72,6 +74,7 @@ def tryKey(key):
             if len(trycode) == 4:
                 if trycode == KEY:
                     print('success')
+                    cancelRFIDTimer.on()
                     RGBLed.color = Color('green')
                     disarmSystem()
                     screen.text('Attempt Passed', 1)
