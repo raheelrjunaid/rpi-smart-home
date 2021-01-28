@@ -6,10 +6,12 @@ from global_vars import buzzer, screen, armSystem, disarmSystem, showSystemStatu
 import os
 from dotenv import load_dotenv, set_key
 from gpiozero import DigitalOutputDevice
+from threading import Thread
 from time import sleep
 from colorzero import Color
 from pad4pi import rpi_gpio
 from signal import pause
+from time import time
 
 load_dotenv()
 
@@ -32,17 +34,32 @@ keypad = factory.create_keypad(keypad=KEYPAD, row_pins=ROW_PINS, col_pins=COL_PI
 
 # Default Key Mode
 keymode = 'enter'
+startTime = time()
 trycode = ''
 triggerCount = 0
 cancelRFIDTimer = DigitalOutputDevice(26, pin_factory=remote_factory)
 
+def startTimer():
+
+    global trycode
+    global startTime
+    while True:
+
+        if int(time() - startTime) > 3:
+            showSystemStatus()
+            trycode = ''
+
+        sleep(1)
+
 def tryKey(key):
-    # TODO Add timeOut
 
     # Import globals (required as function doesn't allow args)
     global trycode
+    global startTime
     global keymode
     global KEY
+    
+    startTime = time()
 
     buzzer.beep(0.2, n=1)
 
@@ -143,8 +160,10 @@ def tryKey(key):
 
 # Functions for main program to utilize
 def main():
+
     # Function to run on key press (argument provided)
     keypad.registerKeyPressHandler(tryKey)
+    Thread(target=startTimer, daemon=True).start()
 
 def close():
     keypad.cleanup()
