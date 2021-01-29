@@ -2,9 +2,10 @@
 # Author: Raheel Junaid
 # Date Started: 1/23/21
 
-from global_vars import buzzer, screen, armSystem, disarmSystem, showSystemStatus, RGBLed, remote_factory
+from global_vars import buzzer, screen, armSystem, disarmSystem, showSystemStatus, RGBLed, remote_factory, camLED
 import os
 from dotenv import load_dotenv, set_key
+from camera_pir import newRecording
 from gpiozero import DigitalOutputDevice
 from threading import Thread
 from time import sleep
@@ -157,6 +158,7 @@ def tryKey(key):
         screen.text('Limit Reached', 1)
         screen.text('', 2)
         buzzer.beep()
+        newRecording(True)
 
 # Functions for main program to utilize
 def main():
