@@ -1,31 +1,57 @@
 from gpiozero import MotionSensor
 from datetime import datetime
-from global_vars import camLED
+from threading import Thread
+from global_vars import camLED, systems, showSystemStatus
 from picamera import PiCamera
-from multiprocessing import Process
-from time import sleep
+from time import sleep, time
 
 pirMotionSensor = MotionSensor(5)
 camera = PiCamera(resolution=(1280, 720))
+repeat = True
 
 def newRecording():
-    camera.start_recording("./cam_videos/" + datetime.now().strftime('%m.%d.%Y-%H:%M:%S') + ".h264")
-    print('Recording')
-    camera.wait_recording(10)
-    camera.stop_recording()
-    print('Finished Recording')
+    global repeat
 
-# Standard test program, not to be used for main functionality — refer to main file (main.py)
-try:
+    camera.start_recording("./cam_videos/Rec" + datetime.now().strftime('%m.%d.%Y-%H:%M:%S') + ".h264")
+    print('Recording')
+    startTime = time()
+
+    camLED.on()
+    systems['camera'] = "R"
+    showSystemStatus()
+
+    while repeat:
+        repeat = False
+        camera.wait_recording(10)
+        
+    camera.stop_recording()
+    print(f'Finished {int(time() - startTime)}s Recording.\n{20 * "="}')
+
+    camLED.off()
+    systems['camera'] = "T"
+    showSystemStatus()
+
+recordingThread = Thread(target=newRecording, daemon=True)
+
+def main():
+    global repeat
 
     while True:
-        
         if pirMotionSensor.value == 1:
-            newRecording()
+            print('Motion Detected')
 
-        # Represents recording duration sensitivity
+            if camera.recording:
+                repeat = True
+                print('repeat sent')
+            else:
+                recordingThread.start()
+
         sleep(2)
 
-except KeyboardInterrupt:
-    camera.close()
-    print('\nExited Program')
+# Standard test program, not to be used for main functionality — refer to main file (main.py)
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        camera.close()
+        print('\nExited Program')
