@@ -9,10 +9,13 @@ pirMotionSensor = MotionSensor(5)
 camera = PiCamera(resolution=(1280, 720))
 repeat = True
 
-def newRecording():
+def newRecording(tripped_alarm=False):
     global repeat
 
-    camera.start_recording("./cam_videos/Rec" + datetime.now().strftime('%m.%d.%Y-%H:%M:%S') + ".h264")
+    if tripped_alarm:
+        camera.start_recording("./cam_videos/Breakin" + datetime.now().strftime('%m.%d.%Y-%H:%M:%S') + ".h264", splitter_port=2)
+    else:
+        camera.start_recording("./cam_videos/Rec" + datetime.now().strftime('%m.%d.%Y-%H:%M:%S') + ".h264")
     print('Recording')
     startTime = time()
 
@@ -20,14 +23,20 @@ def newRecording():
     systems['camera'] = "R"
     showSystemStatus()
 
-    while repeat:
-        repeat = False
-        camera.wait_recording(10)
+    if tripped_alarm:
+        while True:
+            camera.wait_recording(10, splitter_port=2)
+    else:
+        while repeat:
+            repeat = False
+            camera.wait_recording(10)
         
     camera.stop_recording()
     print(f'Finished {int(time() - startTime)}s Recording.\n{20 * "="}')
 
-    camLED.off()
+    if not camera.recording:
+        camLED.off()
+
     systems['camera'] = "T"
     showSystemStatus()
 
