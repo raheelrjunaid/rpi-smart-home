@@ -19,6 +19,7 @@ except KeyboardInterrupt:
     # FIX(Maybe) Module has trouble cleaning up with this function but the main function still works
     # keypad.close()
 
+    camera_pir.camera.close()
     print('\nShutting Down Systems...')
     disarmSystem()
     print('Exited Program')
