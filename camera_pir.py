@@ -31,20 +31,18 @@ def newRecording():
     systems['camera'] = "T"
     showSystemStatus()
 
-recordingThread = Thread(target=newRecording, daemon=True)
-
 def main():
     global repeat
 
     while True:
         if pirMotionSensor.value == 1:
             print('Motion Detected')
+            repeat = True
 
             if camera.recording:
-                repeat = True
                 print('repeat sent')
             else:
-                recordingThread.start()
+                Thread(target=newRecording, daemon=True).start()
 
         sleep(2)
 
