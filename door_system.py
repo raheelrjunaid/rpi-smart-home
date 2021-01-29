@@ -86,6 +86,7 @@ try:
 except KeyboardInterrupt:
     log = [] # Reset Log
     servo.max() # Close the door
+    buzzer.off() # Silence Alarm
     GPIO.cleanup() # For RFID reader only
 
     print('\nExited Loop')
