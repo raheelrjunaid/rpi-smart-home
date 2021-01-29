@@ -15,16 +15,19 @@ try:
 except:
     print(f'Could not connect to Raspberry Pi at {os.environ["REMOTEPI"]}')
 
-armed = True
 camLED = LED(24)
 servo = Servo(18, 1, pin_factory=remote_factory)
 RGBLed = RGBLED(27, 23, 25)
 screen = LCD()
+
 systems = {
-    'fan': 1,
-    'servo': 1,
-    'keypad': 1,
+    'fan': "T",
+    'servo': "T",
+    'keypad': "T",
+    'camera': "T",
+    'sensor': "T",
 }
+
 buzzer = Buzzer(4)
 remote_buzzer = Buzzer(17, pin_factory=remote_factory)
 fan = DigitalOutputDevice(22, pin_factory=remote_factory)
@@ -32,39 +35,38 @@ fan = DigitalOutputDevice(22, pin_factory=remote_factory)
 def armSystem():
     # Arm all systems
     for system in systems:
-        systems[system] = 1
+        systems[system] = "T"
 
-    global armed
-    armed = True
     remote_buzzer.off()
     fan.on()
     servo.max()
 
 def disarmSystem():
-    # Arm all systems
+    # Disarm all systems
     for system in systems:
-        systems[system] = 0
+        systems[system] = "F"
     
-    global armed
     fan.off()
     remote_buzzer.off()
     screen.clear()
-    armed = False
 
 def readSystems(line):
     cat_string = ''
+
+    # Line to print on LCD Screen
+    # First is system
     if line == 1:
         for system in systems:
             cat_string += system[0].upper()
+
+    # Second is status
     else:
         for system in systems:
             status = systems[system]
-            if status == 1:
-                cat_string += 'T' # True
-            else:
-                cat_string += 'F' # False
+            cat_string += systems[system]
+
     return cat_string
 
 def showSystemStatus():
-    screen.text(f'Systems {(len(systems) + 1) * "-"} ' + readSystems(1), 1)
-    screen.text(f'Status {(len(systems) + 2) * "-"} ' + readSystems(2), 2)
+    screen.text(f'Systems {(7 - len(systems)) * "-"} ' + readSystems(1), 1)
+    screen.text(f'Status {(8 - len(systems)) * "-"} ' + readSystems(2), 2)
