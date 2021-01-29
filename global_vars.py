@@ -2,7 +2,7 @@
 # Author: Raheel Junaid
 # Date Started: 1/24/21
 
-from gpiozero import Servo, Buzzer, RGBLED, DigitalOutputDevice
+from gpiozero import Servo, Buzzer, RGBLED, DigitalOutputDevice, LED
 from dotenv import load_dotenv
 from gpiozero.pins.pigpio import PiGPIOFactory
 import os
@@ -16,6 +16,7 @@ except:
     print(f'Could not connect to Raspberry Pi at {os.environ["REMOTEPI"]}')
 
 armed = True
+camLED = LED(24)
 servo = Servo(18, 1, pin_factory=remote_factory)
 RGBLed = RGBLED(27, 23, 25)
 screen = LCD()
