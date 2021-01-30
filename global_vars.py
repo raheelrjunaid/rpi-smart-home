@@ -38,7 +38,6 @@ def armSystem():
         systems[system] = "T"
 
     remote_buzzer.off()
-    fan.on()
     servo.max()
 
 def disarmSystem():
@@ -46,8 +45,8 @@ def disarmSystem():
     for system in systems:
         systems[system] = "F"
     
-    fan.off()
-    remote_buzzer.off()
+    fan.close()
+    remote_buzzer.close()
     screen.clear()
 
 def readSystems(line):
