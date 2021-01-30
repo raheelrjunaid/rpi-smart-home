@@ -45,9 +45,9 @@ def disarmSystem():
     for system in systems:
         systems[system] = "F"
     
-    fan.close()
-    remote_buzzer.close()
     screen.clear()
+    fan.off()
+    remote_buzzer.off()
 
 def readSystems(line):
     cat_string = ''
