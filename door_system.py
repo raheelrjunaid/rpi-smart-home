@@ -3,9 +3,10 @@
 # Date Started: 1/27/21
 
 import RPi.GPIO as GPIO
-from gpiozero import Servo, Buzzer, DigitalOutputDevice
+from gpiozero import Servo, Buzzer, DigitalOutputDevice, DistanceSensor
 from signal import pause
 from multiprocessing import Process
+from threading import Thread
 import time
 from mfrc522 import SimpleMFRC522
 
@@ -13,8 +14,19 @@ from mfrc522 import SimpleMFRC522
 
 rfid = SimpleMFRC522()
 timerStateInput = DigitalOutputDevice(26)
+ultraSonic = DistanceSensor(21, 20)
 servo = Servo(18, 1)
 buzzer = Buzzer(17)
+
+def ultraSonicSense():
+    global timer_thread
+    while True:
+        
+        if ultraSonic.distance < 0.2 and not timer_thread.is_alive():
+            servo.max()
+            print('close servo')
+            
+        time.sleep(1)
 
 def triggerTimer():
     count = 0 # Current countdown in seconds
@@ -37,11 +49,13 @@ def triggerTimer():
         buzzer.beep()
         pause() # Countinuously beep forever
 
-timer_thread = Process(target=triggerTimer)
+timer_thread = Process(target=triggerTimer, daemon=True)
 authUserIDs = [248227650093]
 log = []
 
 try:
+
+    Thread(target=ultraSonicSense, daemon=True).start()
     while True:
 
         # Reset timer on next read
@@ -77,8 +91,8 @@ try:
                 if authenticated == True:
                     servo.min() # Open Door (servo)
                     print('Authenticated\nTimer started => Disable system using Key Pad')
-                    timer_thread = Process(target=triggerTimer)
-                    timer_thread.start()
+                    timer_thread = Process(target=triggerTimer, daemon=True)
+                    timer_thread.start() 
                 else:
                     servo.max()
                     print('Authentication Error')
