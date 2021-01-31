@@ -13,7 +13,7 @@ def newRecording(tripped_alarm=False):
     global repeat
 
     if tripped_alarm:
-        camera.start_recording("./cam_videos/Breakin" + datetime.now().strftime('%m.%d.%Y-%H:%M:%S') + ".h264", splitter_port=2)
+        camera.start_recording("./cam_videos/BreakIn" + datetime.now().strftime('%m.%d.%Y-%H:%M:%S') + ".h264", splitter_port=2)
     else:
         camera.start_recording("./cam_videos/Rec" + datetime.now().strftime('%m.%d.%Y-%H:%M:%S') + ".h264")
     print('Recording')
@@ -51,7 +51,7 @@ def main():
             if camera.recording:
                 print('repeat sent')
             else:
-                Thread(target=newRecording, daemon=True).start()
+                Thread(name="CameraRec", target=newRecording, daemon=True).start()
 
         sleep(2)
 
