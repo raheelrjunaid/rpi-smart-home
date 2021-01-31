@@ -160,21 +160,11 @@ def tryKey(key):
         buzzer.beep()
         newRecording(True)
 
-# Functions for main program to utilize
-def main():
-
-    # Function to run on key press (argument provided)
-    keypad.registerKeyPressHandler(tryKey)
-    Thread(target=startTimer, daemon=True).start()
-
-def close():
-    keypad.cleanup()
-
 # Standard test program, not to be used for main functionality — refer to main file (main.py)
 if __name__ == '__main__':
     try:
-        main()
+        keypad.registerKeyPressHandler(tryKey)
+        Thread(name="KeypadTimeout", target=startTimer, daemon=True).start()
         pause()
     except KeyboardInterrupt:
-        close()
         print('\nExited Program')
