@@ -1,3 +1,7 @@
+# ADC + 7 Segment Display control using potentiometer
+# Author: Raheel Junaid
+# Date Started: 1/30/21
+
 from global_vars import fan, remote_factory, showSystemStatus, systems
 from gpiozero import LEDBoard
 from smbus import SMBus
@@ -24,11 +28,13 @@ def read_ads7830():
     bus.write_byte(0x4b, 0x84)
     return bus.read_byte(0x4b)
 
+# 7 Segment Display Initialization
+# Params: A, B, C, D, E, F, G, pin_factory
 leds = LEDBoard(12, 19, 6, 5, 13, 16, 24, pin_factory=remote_factory)
 
 def main():
     while True:
-        value = int(read_ads7830()/254 * 10)
+        value = int(read_ads7830() / 254 * 10)
 
         for led in range(7):
             if value != 10:
