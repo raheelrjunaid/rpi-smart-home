@@ -41,7 +41,7 @@ except KeyboardInterrupt:
 
     for thread in threads:
         # Allow threads to end processess
-        print(("-" * 20) + "\nWaiting for " + thread.name + "\n" + ("-" * 20), (len(threads) * 10) - int(time() - startTime) + "seconds remaining")
+        print(("-" * 20) + "\nWaiting for " + thread.name + "\n" + ("-" * 20), str((len(threads) * 10) - int(time() - startTime)) + "seconds remaining")
         # Warn user of closing exceptions
         if threads.index(thread) == len(threads) - 1:
             print('On the last thread, Error may return')
