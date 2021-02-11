@@ -9,7 +9,7 @@ This project was made so I could learn more about how different files can intera
 
 ## Status
 - Build Status: Passing
-- Maintainer Status: In Development
+- Maintainer Status: **Not Maintained**
 
 ## Code style
 The current code is a rough draft as there are some bloaded areas and confused use of Processes and Threads. The code in general is restricted through the disallowance
