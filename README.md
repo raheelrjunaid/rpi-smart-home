@@ -1,4 +1,4 @@
-# rpi-smart-home
+<h1 align="center">:house:<br>rpi-smart-home</h1>
 A smart Home security system primarily built using Python and the modern gpiozero API. It implements a variety of features such as a motion-sensor activated Camera, a Keypad, Potentiometer input, an LCD display, RFID Reader, an Angular Servo and more!
 
 ## Quick-Links
