@@ -1,4 +1,4 @@
-<h1 align="center">:house:rpi-smart-home</h1>
+<h1 align="center">:house:<br>rpi-smart-home</h1>
 
 <p align="center"><img src="https://img.shields.io/badge/Build-Passing-success"> <img src="https://img.shields.io/badge/Status-Not%20Maintained-critical"> <img src="https://img.shields.io/badge/version-1.0-blue"></p>
 
