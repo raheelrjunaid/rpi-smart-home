@@ -1,16 +1,14 @@
-<h1 align="center">:house:<br>rpi-smart-home</h1>
+<h1 align="center">:house:rpi-smart-home</h1>
+
+<p align="center"><img src="https://img.shields.io/badge/Build-Passing-success"> <img src="https://img.shields.io/badge/Status-Not%20Maintained-critical"> <img src="https://img.shields.io/badge/version-1.0-blue"></p>
+
 A smart Home security system primarily built using Python and the modern gpiozero API. It implements a variety of features such as a motion-sensor activated Camera, a Keypad, Potentiometer input, an LCD display, RFID Reader, an Angular Servo and more!
 
 ## Quick-Links
-- [Wiki (About and Features)](https://github.com/raheelrjunaid/rpi-smart-home/wiki)
+- [Wiki (About and Features)](https://img.shields.io/badge/Status-Not%20Maintained-red)
 
 ## Motivation
 This project was made so I could learn more about how different files can interact with each other, and using those concepts, how I could write clean code for people to contribute to.
-
-## Status
-- Build Status: Passing
-- Maintainer Status: **Not Maintained**
-  - Last Maintained: February 11th, 2021
 
 ## Code style
 The current code is a rough draft as there are some bloaded areas and confused use of Processes and Threads. The code in general is restricted through the disallowance
